@@ -1,0 +1,246 @@
+body {
+  margin: 0px;
+  font-family: helvetica;
+  font-size: 14px;
+  color: #222;
+}
+
+.sidebar-container input {
+  height: 20px;
+  color: #666
+}
+
+.sidebar-container input:focus {
+  outline: none;
+}
+
+.buttonElement:hover {
+  background-color: aquamarine;
+  cursor: pointer;
+}
+
+.editLineElement {
+  display: inline-block;
+}
+
+.recipeElement {
+  display: block;
+}
+
+.recipePart {
+  display: inline;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.recipePart:hover {
+  background-color: aquamarine;
+}
+
+.ingredient {
+  font-size: small;
+  display: block;
+  cursor: default;
+}
+
+.recipe {
+  font-size: large;
+  cursor: pointer;
+}
+
+.recipe:hover {
+  background-color: aquamarine;
+}
+
+.listItem {
+  display: block;
+}
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+.groceryListLineElement {
+  display: inline;
+  margin-right: 5px;
+}
+
+.sectionHeading {
+  font-weight: bold;
+}
+
+.sidebar-container .sectionHeading {
+  font-weight: bold;
+  display: block;
+  text-align: center;
+}
+
+.sectionHeadingElement {
+  display: inline;
+  margin-right: 5px;
+}
+
+#logo {
+  font-weight: bold;
+}
+
+#navBar {
+  position: relative;
+  margin: 0;
+  height: 43px;
+  background-color: #74c474;
+  z-index: 3;
+}
+
+#navBar .buttonElement:hover {
+  background-color: #96e696;
+}
+
+.navBarElement {
+  display: inline-block;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  height: 19px;
+  text-align: center;
+}
+
+.app-container {
+  white-space: nowrap;
+}
+
+.body-container {
+  width: 75%;
+  display: inline-block;
+  padding: 10px;
+  vertical-align: top;
+  position: absolute;
+  left: 187px;
+}
+
+.sidebar-container {
+  display: inline-block;
+  padding: 10px 3px;
+  position: fixed;
+  width: 179px;
+  height: 100%;
+  z-index: 2;
+  overflow-x: hidden;
+  white-space: nowrap;
+  border-style: solid;
+  border-width: 1px;
+  border-color: transparent #ddd transparent transparent;
+  background-color: #ccc;
+}
+
+.editFormContainer {
+  display: inline-block;
+  width: 500px;
+}
+
+.nameInput {
+  width: 49%;
+}
+
+.quantityInput {
+  width: 15%;
+}
+
+.unitInput {
+  width: 18%;
+}
+
+.deleteButton {
+  width: 8%;
+  line-height: 25px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.deleteButton:hover {
+  cursor: pointer;
+}
+
+.FieldHeadingContainer {
+  display:inline-block;
+  width: 128px;
+  text-align: center;
+}
+
+.FieldHeadingElement {
+  border-style: initial;
+  border-width: 2px;
+  padding: 1px;
+}
+
+.FieldHeadingContainer {
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  padding: 1px;
+}
+
+.nameFieldHeadingContainer {
+  text-align: center;
+  display:inline-block;
+  width: 49%;
+}
+
+.quantityFieldHeadingContainer {
+  text-align: center;
+  display:inline-block;
+  width: 15%;
+}
+
+.unitFieldHeadingContainer {
+  text-align: center;
+  display:inline-block;
+  width: 18%;
+}
+
+.listAddButton {
+  display: inline-block;
+}
+
+.suggestionBoxContainer {
+  background-color: white;
+  color: black;
+  font-size: 11px;
+  font-family: helvetica;
+  display: inline-block;
+  height: 20px;
+  padding: 1px;
+  border-width: 1px;
+  border-style: solid;
+  border-image-outset:0px;
+  border-image-repeat:stretch;
+  border-image-slice:100%;
+  border-image-source:none;
+  border-color: #ccc;
+  vertical-align: top;
+  font-size: 11px;
+}
+
+.suggestionBoxPart {
+  display: inline;
+  line-height: 22px;
+}
+
+.suggestionBoxPart:focus {
+  outline: none;
+}
+
+.suggestionBoxInput {
+  color: black;
+  margin-left: 1px;
+}
+
+.suggestionBoxSuggestion {
+  color: #999;
+}

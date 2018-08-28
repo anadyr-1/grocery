@@ -1,0 +1,42 @@
+[
+  {
+    "model": "grocery_list.grocery",
+    "pk": 1,
+    "fields": {
+        "name": "apple",
+        "quantity": 2,
+        "unit": "x",
+        "containing_recipe": "apple bread"
+    }
+  },
+  {
+    "model": "grocery_list.grocery",
+    "pk": 2,
+    "fields": {
+        "name": "bread",
+        "quantity": 1,
+        "unit": "x",
+        "containing_recipe": "apple bread"
+    }
+  },
+  {
+    "model": "grocery_list.grocery",
+    "pk": 3,
+    "fields": {
+        "name": "jam",
+        "quantity": 2,
+        "unit": "oz",
+        "containing_recipe": "jam sandwich"
+    }
+  },
+  {
+      "model": "grocery_list.grocery",
+      "pk": 4,
+      "fields": {
+        "name": "bread",
+        "quantity": 1,
+        "unit": "x",
+        "containing_recipe": "jam sandwich"
+      }
+  }
+]
