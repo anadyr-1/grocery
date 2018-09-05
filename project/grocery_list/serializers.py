@@ -48,7 +48,7 @@ class GroceryListSerializer(serializers.ModelSerializer):
         try:
           grocery = Grocery.objects.get(pk=grocery_data.get('id'))
         except (Grocery.DoesNotExist):
-          Grocery.objects.create(recipe=instance, **grocery_data)
+          Grocery.objects.create(groceryList=instance, **grocery_data)
         else:
           grocery.name = grocery_data.get('name', grocery.name)
           grocery.quantity = grocery_data.get('quantity', grocery.quantity)
