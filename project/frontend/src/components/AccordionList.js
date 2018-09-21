@@ -17,18 +17,16 @@ class AccordionList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      //Keeps track of which headings are expanded
       headingsAreExpanded: Array(props.data.length).fill(false),
     }
   }
 
   onClick(i) {
+    //Reverse expanded state of clicked heading
     const headingsAreExpanded = this.state.headingsAreExpanded;
     headingsAreExpanded[i] = !headingsAreExpanded[i];
     this.setState({headingsAreExpanded: headingsAreExpanded});
-  }
-
-  editClickHandler(heading) {
-    this.props.editClickHandler(heading);
   }
   
   render() {
@@ -38,9 +36,9 @@ class AccordionList extends Component {
         {
           this.props.data.map((heading,headingIndex) => {
             return(
-              <div className="recipeElement">
-                <div key={headingIndex} className="recipePart buttonElement" onClick={() => {this.onClick(headingIndex)}}>{heading[this.props.parentPropName]}</div>
-                <div className="recipePart buttonElement" onClick={() => {this.editClickHandler(heading)}} >Edit</div>
+              <div key={headingIndex} className="recipeElement">
+                <div className="recipePart buttonElement" onClick={() => {this.onClick(headingIndex)}}>{heading[this.props.parentPropName]}</div>
+                <div className="recipePart buttonElement" onClick={() => {this.props.editClickHandler(heading)}} >Edit</div>
                 <div className="recipePart buttonElement" onClick={() => {this.props.addClickHandler(heading)}} >[ + ]</div>
                 {
                   this.state.headingsAreExpanded[headingIndex] &&

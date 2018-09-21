@@ -4,6 +4,7 @@ import DataProvider from "./DataProvider";
 import AccordionList from "./AccordionList";
 import GroceryList from "./GroceryList";
 import GroceryListHistory from "./GroceryListHistory";
+import GroceryListForm from "./GroceryListForm";
 import Header from "./Header";
 import Footer from "./Footer";
 
@@ -11,43 +12,39 @@ class MainPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isEditMode: false,
+      //App views, if neither is true then it defaults to recipe page view
+      isEditRecipeMode: false,
+      isEditGroceryListMode: false,
       isCheckoutMode: false,
+
+      //Grocery list
       groceries: [],
-      recipeToEdit: null,
-      recipeToEditData: null,
-      newRecipe: false,
-      isTableUpdated: true,
-      areSuggestionsUpdated: true,
-      isGroceryListUpdated: true,
+      
+      //Edit screen
+      toEditData: null,
+
+      //Flags to set false when server data is updated
+      areGroceriesUpdated: true,
+      areGroceryListsUpdated: true,
+
+      //Relevant fields in grocery object
       objectFields: ["name","quantity","unit"]
     }
-  }
-
-  //Handle clicks to Back button
-  backClickHandler() {
-    this.setState({
-      isEditMode: false,
-      isCheckoutMode: false,
-    });
   }
 
   //Handle clicks to recipe Edit button
   editRecipeClickHandler(recipe) {
     this.setState({
-      isEditMode: true,
-      recipeToEditData: recipe,
-      recipeToEdit: recipe.name,
-      editEndpoint: "api/recipes/",
+      isRecipeEditMode: true,
+      toEditData: recipe,
     });
   }
 
+  //Handle clicks to grocery list Edit button
   editGroceryListClickHandler(groceryList) {
     this.setState({
-      isEditMode: true,
-      recipeToEditData: groceryList,
-      recipeToEdit: groceryList.date,
-      editEndpoint: "api/grocerylist/",
+      isGroceryListEditMode: true,
+      toEditData: groceryList,
     });
   }
 
@@ -63,7 +60,6 @@ class MainPage extends Component {
     const groceries = this.state.groceries;
     this.setState({
       groceries: groceries.slice(0,idx).concat(groceries.slice(idx+1)),
-      areSuggestionsUpdated: false,
     })
   }
 
@@ -74,81 +70,27 @@ class MainPage extends Component {
     })
   }
 
-  //Test if all relevant fields in an object are empty
-  fieldsAreEmpty(o) {
-    for (var key in o) {
-      if (o[key] !== "" && this.state.objectFields.includes(key))
-        return false;
-    }
-    return true;
+  onGroceryListCheckout() {
+    this.setState({
+      areGroceryListsUpdated: false,
+      areGroceriesUpdated: false,
+      isCheckoutMode: true,
+      groceries:[],
+    });
   }
 
-  //Test if all objects in an array are empty
-  objectsAreEmpty(array) {
-    for (var i = 0;i < array.length;i++) {
-      if (!this.fieldsAreEmpty(array[i]))
-        return false;
-    }
-    return true;
-  }
-
-  //Handle clicks to checkout button associated with grocery list
-  checkoutClickHandler() {
-    //Check if grocery list is populated
-    if (this.state.groceries.length == 0 || this.objectsAreEmpty(this.state.groceries)) {
-      alert("Grocery list contains no groceries");
-      return;
-    }
-
-    //Send grocery list to server
-    var data = this.state.groceries.filter((x) => !this.fieldsAreEmpty(x));
-    data = {grocery_set: data}
-    const conf = {
-      method: "put",
-      body: JSON.stringify(data),
-      headers: new Headers({ "Content-Type": "application/json" })
-    };
-    fetch("api/grocerylist/submit/", conf)
-      .then(response => {
-        console.log(response.json());
-        this.setState({
-          isGroceryListUpdated: false,
-          areSuggestionsUpdated: false,
-        })
-      });
-    //Set to checkout mode
-    this.setState({isCheckoutMode: true,groceries:[]});
-  }
-
-  //Submit recipe edit page data to add/update/delete
-  submitClickHandler(data) {
-    /*
-    Send request to server including (a) ingredients to be deleted from server and 
-    (b) new data
-    */
-    const conf = {
-      method: "put",
-      body: JSON.stringify(data),
-      headers: new Headers({ "Content-Type": "application/json" })
-    };
-    fetch(this.state.editEndpoint + (this.state.newRecipe ? "submit" : data.id) + "/", conf)
-      .then(response => {
-        console.log(response.json());
-        this.setState({
-          isTableUpdated: false,
-          areSuggestionsUpdated: false,
-          newRecipe: false,
-        })
-      });
-
-    //Set view back to grocery list view
-    this.backClickHandler();
+  onRecipeUpdate() {
+    this.setState({
+      isTableUpdated: false,
+      areGroceriesUpdated: false,
+      newRecipe: false,
+    });
   }
 
   //Call when recipe list data has been updated with server data
   tableUpdateHandler() {
     this.setState({
-      isTableUpdated: true,
+      areGroceriesUpdated: true,
     })
   }
 
@@ -159,12 +101,17 @@ class MainPage extends Component {
     //Render recipe edit view for new recipe
     if (recipe != null && recipe != "") {
       this.setState({
-        recipeToEdit: recipe,
-        recipeToEditData: {name: recipe, grocery_set: []},
-        isEditMode: true,
-        newRecipe: true,
+        toEditData: {name: recipe, grocery_set: []},
+        isRecipeEditMode: true,
       });
     }
+  }
+
+  onRecipeRemove() {
+    this.setState({
+      areGroceriesUpdated: false,
+      isRecipeEditMode: false,
+    });
   }
 
   //Handles change to grocery list data
@@ -181,63 +128,70 @@ class MainPage extends Component {
     })
   }
 
-  groceryListDeleteHandler(id) {
-    //Send request to server
-    const conf = {
-      method: "delete",
-      headers: new Headers({ "Content-Type": "application/json" })
-    };
-    fetch("api/grocerylist/" + id + "/", conf)
-      .then(response => {
-        console.log(response.json());
-        this.setState({
-          isGroceryListUpdated: false,
-        })
-      });
-  }
-
   groceryHistoryAddHandler(list) {
     var groceries = this.state.groceries;
     list.grocery_set.forEach((x) => {groceries.push(x)});
     this.setState({groceries:groceries});
   }
 
-  removeRecipeHandler(recipe) {
-    //Send request to server
-    const conf = {
-      method: "delete",
-      body: JSON.stringify(recipe),
-      headers: new Headers({ "Content-Type": "application/json" })
-    };
-    fetch(this.state.editEndpoint + recipe.id + "/", conf)
-      .then(response => {
-        console.log(response.json());
-        this.setState({
-          isTableUpdated: false,
-          isGroceryListUpdated: false,
-          isEditMode: false,
-        })
-      });
-  }
-
   suggestionsUpdateHandler() {
     this.setState({
-      areSuggestionsUpdated: true,
+      areGroceriesUpdated: true,
+    })
+  }
+
+  //Called whenever groceries in server are changed
+  onGroceriesChange() {
+    this.setState({
+      areGroceriesUpdated: false,
+    })
+  }
+
+  //Called whenever a child element has updated its local grocery data to fit server data 
+  onGroceriesUpdate() {
+    this.setState({
+      areGroceriesUpdated: true,
+    })
+  }
+
+  //Called whenever grocery lists in server are changed
+  onGroceryListsChange() {
+    this.setState({
+      areGroceryListsUpdated: false,
+    })
+  }
+
+  //Called whenever a child element has updated its local grocery list data to fit server data 
+  onGroceryListsUpdate() {
+    this.setState({
+      areGroceryListsUpdated: true,
     })
   }
 
   render() {
     var body;
-    if (this.state.isEditMode) {
+    if (this.state.isRecipeEditMode) {
       //Recipe edit view
       body = (
-        <div class="editFormContainer">
+        <div className="editFormContainer">
           <RecipeForm 
-            data={this.state.recipeToEditData}
-            recipe={this.state.recipeToEdit}
-            onSubmit={(data) => {this.submitClickHandler(data)}}
-            onRemove={(recipe) => {this.removeRecipeHandler(recipe)}}
-            onBack={() => {this.backClickHandler()}}
+            data={this.state.toEditData}
+            onGroceriesChange={() => {this.onGroceriesChange()}}
+            navigateBack={() => {this.setState({isRecipeEditMode: false})}}
+            objectFields={this.state.objectFields}
+          />
+        </div>
+      )
+    } else if (this.state.isGroceryListEditMode) {
+      //Grocery list edit view
+      body = (
+        <div className="editFormContainer">
+          <GroceryListForm 
+            data={this.state.toEditData}
+            onGroceriesChange={() => {this.onGroceriesChange()}}
+            onGroceryListsChange={() => {this.onGroceryListsChange()}}
+            navigateBack={() => {this.setState({isGroceryListEditMode: false})}}
+            objectFields={this.state.objectFields}
           />
         </div>
       )
@@ -248,8 +202,8 @@ class MainPage extends Component {
           <div className="sectionHeading">Recipes</div>
           <DataProvider 
             endpoint="api/recipes/" 
-            isUpdated={this.state.isTableUpdated}
-            onUpdate={() => {this.tableUpdateHandler()}}
+            isUpdated={this.state.areGroceriesUpdated}
+            onUpdate={() => {this.onGroceriesUpdate()}}
             render={(data) => 
             <AccordionList 
               data={data} 
@@ -267,8 +221,8 @@ class MainPage extends Component {
         <div>
           <DataProvider 
             endpoint="api/grocerylist/"
-            isUpdated={this.state.isGroceryListUpdated}
-            onUpdate={() => {this.groceryListUpdateHandler()}}
+            isUpdated={this.state.areGroceryListsUpdated}
+            onUpdate={() => {this.onGroceryListsUpdate()}}
             render={(data) => 
             <GroceryListHistory 
               data={data}
@@ -281,17 +235,18 @@ class MainPage extends Component {
     return(
       <div className="appContainer">
         <Header 
-          onListsClick={() => {this.setState({isCheckoutMode:true})}}
-          onRecipesClick={() => {this.setState({isCheckoutMode:false,isEditMode:false})}}
+          onListsClick={() => {this.setState({isCheckoutMode:true,isRecipeEditMode:false,isGroceryListEditMode:false})}}
+          onRecipesClick={() => {this.setState({isCheckoutMode:false,isRecipeEditMode:false,isGroceryListEditMode:false})}}
         />
         <div className="sidebar-container">
           <GroceryList 
             data={this.state.groceries} 
-            onCheckoutClick={() => {this.checkoutClickHandler()}}
+            onCheckout={() => {this.onGroceryListCheckout()}}
             onClearClick={() => {this.clearClickHandler()}}
             onChange={(newData) => {this.groceryListChangeHandler(newData)}}
-            isUpdated={this.state.areSuggestionsUpdated}
-            onUpdate={() => {this.suggestionsUpdateHandler()}}
+            areSuggestionsUpdated={this.state.areGroceriesUpdated}
+            onUpdate={() => {this.onGroceriesUpdate()}}
+            objectFields={this.state.objectFields}
           />
         </div>
         <div className="body-container">

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --watch --mode development ./project/frontend/src/index.js --output ./project/frontend/static/frontend/main21.js",
+    "dev": "webpack --watch --mode development ./project/frontend/src/index.js --output ./project/frontend/static/frontend/main22.js",
     "build": "webpack --mode production ./project/frontend/src/index.js --output ./project/frontend/static/frontend/main.js"
   },
   "keywords": [],

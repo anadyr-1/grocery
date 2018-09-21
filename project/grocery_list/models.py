@@ -18,6 +18,7 @@ class Grocery(models.Model):
     ('tbsp','Tablespoons'),
     ('cup','Cups'),
     ('pint','Pints'),
+    ('quart','Quarts'),
     ('oz','Ounces'),
     ('lb','Pounds'),
     ('kg','Kilograms'),

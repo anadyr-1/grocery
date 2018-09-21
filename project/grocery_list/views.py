@@ -68,7 +68,9 @@ def grocery_list_detail(request,id):
         return JsonResponse("Success",status=201,safe=False)
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
+        
         groceryList = GroceryList.objects.get(pk=id)
+        
         serializer = GroceryListSerializer(groceryList,data=data)
         if serializer.is_valid():
             serializer.save()

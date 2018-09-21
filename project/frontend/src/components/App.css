@@ -225,6 +225,7 @@ hr {
   border-color: #ccc;
   vertical-align: top;
   font-size: 11px;
+  z-index: 1;
 }
 
 .suggestionBoxPart {
